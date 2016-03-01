@@ -1,0 +1,29 @@
+ServerName shiny
+
+<VirtualHost *:80>
+  ProxyPass / http://shiny:80/
+  ProxyPassReverse / http://shiny:80/
+  ProxyPreserveHost On
+
+OIDCProviderIssuer https://affinitech-apps.eu.auth0.com
+OIDCProviderAuthorizationEndpoint https://affinitech-apps.eu.auth0.com/authorize
+OIDCProviderTokenEndpoint https://affinitech-apps.eu.auth0.com/oauth/token
+OIDCProviderTokenEndpointAuth client_secret_post
+OIDCProviderUserInfoEndpoint https://affinitech-apps.eu.auth0.com/userinfo
+
+OIDCClientID F5ElD0wrzIZMDEB9pCvDJasX26HghSjv
+OIDCClientSecret DalYvq-pdq2mBopW_avK6SuN7bIfJ7lG6GrHiTGGiAlsE3-4EaDv_CvIb7RlJJHt
+
+OIDCScope "openid name email"
+OIDCRedirectURI http://shiny:80/
+OIDCCryptoPassphrase <passwordToEncryptTheSessionInformationOnTheCookie>
+OIDCCookiePath /
+
+<Location / >
+   AuthType openid-connect
+   Require valid-user
+   LogLevel debug
+</Location>
+
+</VirtualHost>
+

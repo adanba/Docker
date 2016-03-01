@@ -1,0 +1,42 @@
+#Listen 80
+#ProxyPassMatch ^/(.+)/websocket ws://shiny1:80/$1/websocket
+#ProxyPass / http://shiny1:80/
+#ProxyPassReverse / http://shiny1:80/
+#ProxyRequests Off
+
+
+<VirtualHost *:80>
+ServerName ws://shiny1:80
+ProxyPassMatch ^/(.+)/websocket ws://shiny1:80/$1/websocket
+ProxyPass / http://shiny1:80/
+ProxyPassReverse / http://shiny1:80/
+ProxyRequests Off
+<Location />
+            Deny from all
+            AuthUserFile /etc/apache2/htpass
+            AuthName authorization
+            AuthType Basic
+            Satisfy Any
+            require user test1
+</Location>
+</VirtualHost>
+
+
+<VirtualHost *:80>
+ServerName ws://shiny0:80
+
+ProxyPassMatch ^/(.+)/websocket ws://shiny0:80/$1/websocket
+ProxyPass /shiny0/ http://shiny0:80/
+ProxyPassReverse /shiny0/ http://shiny0:80/
+ProxyRequests Off
+redirect /shiny0/ http://shiny0:80/
+<Location /shiny0/>
+            Deny from all
+            AuthUserFile /etc/apache2/htpass
+            AuthName authorization
+            AuthType Basic
+            Satisfy Any
+            require user test0
+</Location>
+</VirtualHost>
+
